@@ -10,12 +10,7 @@ module.exports = {
 			var server2 = played[message.guild.id];
 
 
-			server.dispatcher = connection.play(ytdl(server.queue[0], { filter: format => format.container === 'mp4' }));
-
-			// Saving music on permanent history
-			fs.appendFile('./history/played-musics.txt', server.queue[0].slice(0) + "\n" , (err) => {
- 				if(err) throw err;
-			});
+			server.dispatcher = connection.play(server.queue[0]);
 
 			// Saving music on recent history
 			server2.queue.push(server.queue[0].slice(0));
@@ -24,6 +19,13 @@ module.exports = {
 			server.queue.shift();
 
 			server.dispatcher.on("end",function(){
+				if(server.queue[0]){
+					play(connection, message);
+				} else{
+					connection.disconnect();
+				}
+			});
+			server.dispatcher.on("finish",function(){
 				if(server.queue[0]){
 					play(connection, message);
 				} else{
@@ -45,9 +47,10 @@ module.exports = {
 
 				fs.readFile('./playlists/' + message.member.user.id + "/" + args[1] + '.txt', 'utf8', function(err, contents) {
     				// Loading all the contents and storing them for playing
-    				musics = contents.split("\n");
+    				var musics = contents.split("\n");
     				musics.pop();
 
+    				// caso se queira começar numa música a meio da playlist
     				var idx = 0
     				if (args[2] && Number.isInteger(args[2])){
     					idx = args[2];
@@ -55,6 +58,12 @@ module.exports = {
 
     				for(;idx < musics.length;idx++){
 						server.queue.push(musics[idx].slice(0));
+						console.log(musics[idx]);
+						// Saving music on permanent history
+						fs.appendFile('./history/played-musics.txt', musics[idx].slice(0) + "\n" , (err) => {
+			 				if(err) throw err;
+						});
+
 					}
     			});
     			m.edit("All musics have been collected!");

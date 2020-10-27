@@ -5,28 +5,25 @@ module.exports = {
 
 		//private function to play a music
 		function play(connection, message){
-			console.log("1")
+
 			var server = servers[message.guild.id];
 			var server2 = played[message.guild.id];
-			console.log("2")
+
 
 			server.dispatcher = connection.play(server.queue[0]);
-			console.log("3")
+		
 			// Loop the music to the end of the playlist
 			server.queue.push(server.queue[0].slice(0));
-			console.log("4")
+
 			//remove a música que acabou de tocar do inicio da queue
 			server.queue.shift();
-			console.log("5")
 			
 			server.dispatcher.on('debug', console.log);
 
 			server.dispatcher.on("end",function(){
-				console.log("6")
 				play(connection, message);
 			});
 			server.dispatcher.on("finish",function(){
-				console.log("6")
 				play(connection, message);
 			});
 		}
