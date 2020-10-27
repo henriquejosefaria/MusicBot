@@ -61,6 +61,16 @@ module.exports = {
     			});
     			m.edit("All musics have been collected!");
     		})
+		} else if(fs.existsSync('./musics/' + args[1])){
+			message.channel.send("Fetching the music....").then(m =>{
+				var server = servers[message.guild.id];
+				server.queue.push(musics[idx].slice(0));
+				// Saving music on permanent history
+				fs.appendFile('./history/played-musics.txt', musics[idx].slice(0) + "\n" , (err) => {
+				 	if(err) throw err;
+				});
+				m.edit("The music is ready to be played!");
+			});
 		} else{
 			message.channel.send("Sorry but that playlist doesn't exists!");
 			return;
