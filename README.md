@@ -1,2 +1,3 @@
 # MusicBot
-This is discord Music Bot that downloads music's audios and plays them. It's able to create playlists, loop through them, add musics, skip musics, remove musics, etc...
+
+Before u start using it notice that the token is invalid and you need to replace it for your own bot token. You can generate a bot token here: https://discord.com/developers/applications .
